@@ -1,4 +1,5 @@
-import clerkAuth from "./middleware./clerkAuth";
+import clerkAuth from "./middleware";
+
 
 export default clerkAuth;
 
