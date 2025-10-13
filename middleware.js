@@ -1,7 +1,10 @@
-import clerkAuth from "./middleware";
+import clerkAuth from "./app/MiddleWare/clerkauth";
 
 
+
+// middleware/index.js
 export default clerkAuth;
+
 
 export const config = {
   matcher: [
