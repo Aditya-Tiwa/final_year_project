@@ -8,25 +8,34 @@ const isProtectedRoute = createRouteMatcher([
   "/transaction(.*)",
 ]);
 
-// Create Arcjet middleware
-const aj = arcjet({
-  key: process.env.ARCJET_KEY,
-  // characteristics: ["userId"], // Track based on Clerk userId
-  rules: [
-    // Shield protection for content and security
-    shield({
-      mode: "LIVE",
-    }),
-    detectBot({
-      mode: "LIVE", // will block requests. Use "DRY_RUN" to log only
-      allow: [
-        "CATEGORY:SEARCH_ENGINE", // Google, Bing, etc
-        "GO_HTTP", // For Inngest
-        // See the full list at https://arcjet.com/bot-list
+// Guarded Arcjet: if ARCJET_KEY missing, use a noop middleware to avoid crashes
+const hasArcjetKey = Boolean(process.env.ARCJET_KEY);
+
+const aj = hasArcjetKey
+  ? arcjet({
+      key: process.env.ARCJET_KEY,
+      // characteristics: ["userId"], // Track based on Clerk userId (enable only when ready)
+      rules: [
+        // Shield protection for content and security
+        shield({
+          mode: "LIVE",
+        }),
+        detectBot({
+          mode: "LIVE",
+          allow: [
+            "CATEGORY:SEARCH_ENGINE", // Google, Bing, etc
+            "GO_HTTP", // For Inngest
+            // See the full list at https://arcjet.com/bot-list
+          ],
+        }),
       ],
-    }),
-  ],
-});
+    })
+  : {
+      // noop middleware compatible with createMiddleware
+      async handle(req) {
+        return NextResponse.next();
+      },
+    };
 
 // Create base Clerk middleware
 const clerk = clerkMiddleware(async (auth, req) => {
