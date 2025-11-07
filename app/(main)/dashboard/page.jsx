@@ -3,7 +3,7 @@ import { getUserAccounts } from "@/actions/dashboard";
 import { getDashboardData } from "@/actions/dashboard";
 import { getCurrentBudget } from "@/actions/budget";
 import AccountCard  from "./_components/account-card";
-import CreateAccountDrawer from "@/components/create-account-drawer";
+import {CreateAccountDrawer} from "@/components/create-account-drawer";
 
 
 import { BudgetProgress } from "./_components/budget-progress";
